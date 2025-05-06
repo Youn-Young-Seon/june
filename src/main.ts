@@ -1,5 +1,5 @@
-import {MainPage} from "./page/main/main-page.ts";
 // @ts-ignore
 import "./style.scss";
+import {LoginPage} from "./page/login/login-page.ts";
 
-document.querySelector('#app')!.append(new MainPage({}).render());
+document.querySelector('#app')!.append(new LoginPage({}).render());

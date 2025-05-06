@@ -1,15 +1,16 @@
 import {html, View} from "rune-ts";
+import {Picture} from "../../component/picture.ts";
+import {Video} from "../../component/video.ts";
 
 export class MainPage extends View<any> {
+    picture = new Picture({});
+    video = new Video({});
+
     override template() {
         return html`
             <div>
-                <div>
-                    <span>Picture</span>
-                </div>
-                <div>
-                    <span>Video</span>
-                </div>
+                ${this.picture}
+                ${this.video}
             </div>
         `;
     }

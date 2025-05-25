@@ -1,5 +1,6 @@
-// @ts-ignore
-import "./style.scss";
-import {LoginPage} from "./page/login/login-page.ts";
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
 
-document.querySelector('#app')!.append(new LoginPage({}).render());
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));

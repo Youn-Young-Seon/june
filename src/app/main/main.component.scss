@@ -1,4 +1,4 @@
-.MainPage {
+:host {
   $picture-color: #9acd32;
   $video-color: #32aaff;
 
@@ -30,11 +30,11 @@
     }
   }
 
-  .Picture {
+  .picture {
     @include card-style($picture-color);
   }
 
-  .Video {
+  .video {
     @include card-style($video-color);
   }
 }

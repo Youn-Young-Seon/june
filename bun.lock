@@ -1,0 +1,13 @@
+{
+  "lockfileVersion": 1,
+  "workspaces": {
+    "": {
+      "devDependencies": {
+        "create-next-app": "15.1.6",
+      },
+    },
+  },
+  "packages": {
+    "create-next-app": ["create-next-app@15.1.6", "", { "bin": { "create-next-app": "dist/index.js" } }, "sha512-RxgPXJh1ofWCMhS+X9O/umfddzX80dMgkvpHHJGaLxP8z4RZoaWaiyg5jZRvtl3jea3Z6xh5jTiEzWRBnEIEZw=="],
+  }
+}

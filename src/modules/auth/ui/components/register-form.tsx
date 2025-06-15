@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import Link from "next/link"
 
 const formSchema = z.object({
     email: z.string().email({
@@ -22,19 +21,30 @@ const formSchema = z.object({
     password: z.string().min(6, {
         message: "비밀번호는 최소 6자 이상이어야 합니다.",
     }),
+    confirmPassword: z.string().min(6, {
+        message: "비밀번호는 최소 6자 이상이어야 합니다.",
+    }),
+    name: z.string().min(2, {
+        message: "이름은 최소 2자 이상이어야 합니다.",
+    }),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "비밀번호가 일치하지 않습니다.",
+    path: ["confirmPassword"],
 })
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
             password: "",
+            confirmPassword: "",
+            name: "",
         },
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // TODO: 로그인 로직 구현
+        // TODO: 회원가입 로직 구현
         console.log(values)
     }
 
@@ -43,10 +53,23 @@ export const LoginForm = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>이름</FormLabel>
+                            <FormControl>
+                                <Input placeholder="홍길동" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>이메일</FormLabel>
                             <FormControl>
                                 <Input placeholder="example@email.com" {...field} />
                             </FormControl>
@@ -59,7 +82,20 @@ export const LoginForm = () => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel>비밀번호</FormLabel>
+                            <FormControl>
+                                <Input type="password" placeholder="******" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>비밀번호 확인</FormLabel>
                             <FormControl>
                                 <Input type="password" placeholder="******" {...field} />
                             </FormControl>
@@ -68,14 +104,8 @@ export const LoginForm = () => {
                     )}
                 />
                 <Button type="submit" className="w-full">
-                    Sign in
+                    회원가입
                 </Button>
-                <div className="text-center text-sm">
-                    계정이 없으신가요?{" "}
-                    <Link href="/auth/register" className="text-primary hover:underline">
-                        회원가입
-                    </Link>
-                </div>
             </form>
         </Form>
     )

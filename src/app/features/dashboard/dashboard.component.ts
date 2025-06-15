@@ -5,16 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="dashboard">
-      <h1>Dashboard</h1>
-      <p>Welcome to your dashboard!</p>
-    </div>
-  `,
-  styles: [`
-    .dashboard {
-      padding: 2rem;
-    }
-  `]
+  template: `<div class="dashboard-message">I will load videos in the future!</div>`,
+  styles: [`.dashboard-message { font-size: 1.2rem; margin-top: 16px; }`]
 })
 export class DashboardComponent {} 

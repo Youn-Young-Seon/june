@@ -23,6 +23,7 @@ yarn-error.log
 .next
 .cursor
 next
+next*
 
 # Visual Studio Code
 .vscode/*
@@ -40,6 +41,7 @@ next
 /libpeerconnection.log
 testem.log
 /typings
+.env
 
 # System files
 .DS_Store

@@ -43,27 +43,36 @@ export const RegisterForm = () => {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // TODO: 회원가입 로직 구현
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            const response = await fetch(`${process.env.NEST_PUBLIC_API_URL}/auth/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password,
+                    name: values.name,
+                }),
+            })
+
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(error.message || "회원가입에 실패했습니다.")
+            }
+
+            const data = await response.json()
+            console.log(data.message)
+            // TODO: 회원가입 성공 후 로그인 페이지로 리다이렉트
+        } catch (error) {
+            console.error("회원가입 중 오류가 발생했습니다:", error)
+        }
     }
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>이름</FormLabel>
-                            <FormControl>
-                                <Input placeholder="홍길동" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
                 <FormField
                     control={form.control}
                     name="email"

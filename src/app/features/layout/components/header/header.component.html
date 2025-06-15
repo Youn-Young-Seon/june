@@ -1,0 +1,21 @@
+<header class="header">
+  <div class="search">
+    <span class="material-icons">search</span>
+    <input type="text" placeholder="Search...">
+  </div>
+
+  <div class="actions">
+    <button class="notification-btn" [class.has-unread]="unreadCount > 0">
+      <span class="material-icons">notifications</span>
+      <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+
+    <div class="user-menu">
+      <img src="assets/images/avatar.jpg" alt="User avatar" class="avatar">
+      <div class="user-info">
+        <span class="name">John Doe</span>
+        <span class="role">Administrator</span>
+      </div>
+    </div>
+  </div>
+</header> 

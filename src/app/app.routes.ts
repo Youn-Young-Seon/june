@@ -1,23 +1,25 @@
 import { Routes } from '@angular/router';
-import {LoginComponent} from './login/login.component';
-import {MainComponent} from './main/main.component';
-import {LoginRedirectGuard} from './auth/guard/login-redirect-guard';
-import {AuthGuard} from './auth/guard/auth-guard';
+import { MainLayoutComponent } from './features/layout/components/main-layout/main-layout.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
-    path: 'login',
-    component: LoginComponent,
-    canActivate: [LoginRedirectGuard],
-  },
-  {
-    path: 'main',
-    component: MainComponent,
-    canActivate: [AuthGuard],
-  },
-  {
     path: '',
-    redirectTo: 'main',
-    pathMatch: 'full',
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent
+      }
+    ]
   },
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+  }
 ];

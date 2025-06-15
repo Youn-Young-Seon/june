@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   registerForm: FormGroup;
   isLoading = false;
   error: string | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
@@ -26,8 +29,6 @@ export class RegisterComponent implements OnInit {
       validators: this.passwordMatchValidator
     });
   }
-
-  ngOnInit(): void {}
 
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password');
@@ -51,7 +52,8 @@ export class RegisterComponent implements OnInit {
 
     try {
       const { email, password } = this.registerForm.value;
-      await this.authService.register(email, password);
+      // TODO: Implement register service
+      console.log('Register attempt:', { email, password });
       this.router.navigate(['/auth/login']);
     } catch (error: any) {
       this.error = error.message || '회원가입 중 오류가 발생했습니다.';

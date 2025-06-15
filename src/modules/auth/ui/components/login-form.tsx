@@ -14,6 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
     email: z.string().email({
@@ -25,6 +27,10 @@ const formSchema = z.object({
 })
 
 export const LoginForm = () => {
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -33,9 +39,34 @@ export const LoginForm = () => {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // TODO: 로그인 로직 구현
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            setIsLoading(true)
+            setError(null)
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message || "로그인 중 오류가 발생했습니다.")
+            }
+
+            router.push("/")
+        } catch (err) {
+            
+        } finally {
+            
+        }
     }
 
     return (

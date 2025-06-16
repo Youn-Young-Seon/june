@@ -1,7 +1,7 @@
-<app-navbar></app-navbar>
+<app-navbar (toggleSidebar)="toggleSidebar()"></app-navbar>
 <div class="layout-container">
-    <app-sidebar></app-sidebar>
+    <app-sidebar [collapsed]="isSidebarCollapsed"></app-sidebar>
     <main class="main-content">
-        <router-outlet></router-outlet>
+        <div class="text-lg text-gray-500">I will load videos in the future!</div>
     </main>
 </div>

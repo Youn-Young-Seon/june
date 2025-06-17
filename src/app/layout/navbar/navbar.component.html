@@ -13,6 +13,7 @@
     </button>
   </div>
   <div>
-    <button class="px-4 py-2 border rounded-full text-blue-600 border-blue-600 hover:bg-blue-50">Sign in</button>
+    <button (click)="openLoginModal()" class="px-4 py-2 border rounded-full text-blue-600 border-blue-600 hover:bg-blue-50">Sign In</button>
+    <app-login *ngIf="showLoginModal" (closeModal)="closeLoginModal()"></app-login>
   </div>
 </nav>

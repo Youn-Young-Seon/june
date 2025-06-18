@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { LoginData } from '../types';
 
 @Component({
   selector: 'app-login',
@@ -13,19 +16,36 @@ export class LoginComponent {
   @Output() 
   closeModal = new EventEmitter<void>();
 
-  loginData = {
+  loginData: LoginData = {
     email: '',
     password: ''
   };
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   close() {
     this.closeModal.emit();
   }
 
+  openRegister() {
+    this.router.navigate(['/register']);
+  }
+
   onSubmit() {
-    // TODO: Implement actual login logic
-    console.log('Login attempt:', this.loginData);
-    // After successful login
-    this.close();
+    this.authService.signIn({ ...this.loginData })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          this.close();          
+        }
+      });
   }
 }

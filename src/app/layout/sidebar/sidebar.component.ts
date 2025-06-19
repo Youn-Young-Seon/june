@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from './types';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({  
   selector: 'app-sidebar',
@@ -13,7 +14,7 @@ export class SidebarComponent {
   @Input() 
   collapsed = false;
 
-  menuItems: MenuItem[] = [
+  commonMenuItems: MenuItem[] = [
     {
       name: 'Home',
       link: '/',
@@ -29,6 +30,9 @@ export class SidebarComponent {
       link: '/trending',
       d: 'M13 10V3L4 14h7v7l9-11h-7z'
     },
+  ]
+
+  personalMenuItems: MenuItem[] = [    
     {
       name: 'History',
       link: '/history',
@@ -43,6 +47,14 @@ export class SidebarComponent {
       name: 'All playlists',
       link: '/playlists',
       d: 'M4 6h16M4 10h16M4 14h16M4 18h16'
-    }
+    }  
   ]
+
+  constructor(
+    private authService: AuthService
+  ){}
+
+  checkIsLoggedIn() {
+    return this.authService.isLoggedIn();
+  }
 }

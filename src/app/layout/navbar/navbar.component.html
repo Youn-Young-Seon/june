@@ -13,7 +13,8 @@
     </button>
   </div>
   <div>
-    <button (click)="openLoginModal()" class="px-4 py-2 border rounded-full text-blue-600 border-blue-600 hover:bg-blue-50">Sign In</button>
+    <button *ngIf="!checkIsLoggedIn()" (click)="openLoginModal()" class="px-4 py-2 border rounded-full text-blue-600 border-blue-600 hover:bg-blue-50">Sign In</button>
+    <button *ngIf="checkIsLoggedIn()" (click)="logout()" class="px-4 py-2 border rounded-full text-blue-600 border-blue-600 hover:bg-blue-50">Log Out</button>
     <app-login *ngIf="showLoginModal" (closeModal)="closeLoginModal()"></app-login>
   </div>
 </nav>

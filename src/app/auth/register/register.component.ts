@@ -43,9 +43,6 @@ export class RegisterComponent {
         },
         error: (error) => {
           console.log(error);
-        },
-        complete: () => {
-
         }
       });
   }

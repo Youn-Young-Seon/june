@@ -1,14 +1,25 @@
 <aside [ngClass]="collapsed ? 'w-20' : 'w-56'" class="sidebar bg-white h-full border-r flex flex-col justify-between py-4 transition-all duration-300">
   <div>
     <ul class="space-y-2">      
-      <li *ngFor="let menuItem of menuItems">
+      <li *ngFor="let menuItem of commonMenuItems">
         <a [routerLink]="menuItem.link" class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-lg cursor-pointer">
           <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.d"/>
           </svg>
           <span *ngIf="!collapsed" class="ml-4">{{menuItem.name}}</span>
         </a>
-      </li>      
+      </li>
+      <hr>
+      <ng-container *ngIf="checkIsLoggedIn()">
+        <li *ngFor="let menuItem of personalMenuItems">
+          <a [routerLink]="menuItem.link" class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+            <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.d"/>
+            </svg>
+            <span *ngIf="!collapsed" class="ml-4">{{menuItem.name}}</span>
+          </a>
+        </li>
+      </ng-container>
     </ul>
   </div>
   <div class="px-4 text-xs text-gray-400" *ngIf="!collapsed">© JunTube</div>

@@ -35,16 +35,17 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    this.authService.signIn({ ...this.loginData })
+    this.authService.signIn(this.loginData)
       .subscribe({
         next: (response) => {
           console.log(response);
+          const accessToken: string = Object.getOwnPropertyDescriptor(response, 'access_token')?.value;
+          this.authService.setToken(accessToken);
+          this.close();
+
         },
         error: (error) => {
           console.error(error);
-        },
-        complete: () => {
-          this.close();          
         }
       });
   }

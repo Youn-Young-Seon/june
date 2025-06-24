@@ -27,7 +27,7 @@ export class UploadService {
     const formData = new FormData();
     formData.append('title', videoData.title);
     formData.append('description', videoData.description);
-    formData.append('video', videoData.file);
+    formData.append('file', videoData.file);
 
     return this.http.post(`${this.apiUrl}/video/upload`, formData, {
       reportProgress: true,

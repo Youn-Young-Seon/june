@@ -72,7 +72,7 @@ export class UploadComponent {
       },
       complete: () => {
         this.isUploading = false;
-        alert('Video uploaded successfully!');
+        this.uploadService.notifyUploadFinished();
         this.close();
       }
     });

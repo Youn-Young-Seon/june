@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface UploadProgress {
@@ -19,7 +19,9 @@ export interface VideoUploadData {
   providedIn: 'root'
 })
 export class UploadService {
-  private apiUrl = `${environment.apiUrl}`; // 백엔드 API URL
+  private apiUrl = `${environment.apiUrl}`;
+
+  uploadFinished$ = new Subject<void>();
 
   constructor(private http: HttpClient) {}
 
@@ -69,5 +71,9 @@ export class UploadService {
   validateFileType(file: File): boolean {
     const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov'];
     return allowedTypes.includes(file.type);
+  }
+
+  notifyUploadFinished(): void {
+    this.uploadFinished$.next();
   }
 } 

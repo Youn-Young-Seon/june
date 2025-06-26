@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { VideoService } from './video.service';
 import { Video } from './types';
 import { UploadService } from '../upload/upload.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-video',
@@ -21,6 +22,8 @@ export class VideoComponent implements OnInit {
   showModal = false;
 
   hoveredVideoId: string | null = null;
+
+  videoStreamIdx: string | null = null;
 
   constructor(
     private videoService: VideoService,
@@ -41,7 +44,6 @@ export class VideoComponent implements OnInit {
     this.videoService.getVideos().subscribe({
       next: (videos) => {
         this.videos = videos;
-        console.log(this.videos);
         this.loading = false;
       },
       error: () => {
@@ -86,6 +88,7 @@ export class VideoComponent implements OnInit {
 
   onMouseEnter(videoId: string): void {
     this.hoveredVideoId = videoId;
+    this.videoStreamIdx = `${environment.apiUrl}/video/stream/${videoId}`;
   }
 
   onMouseLeave(videoId: string): void {

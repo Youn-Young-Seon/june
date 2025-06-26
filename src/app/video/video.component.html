@@ -10,7 +10,7 @@
            (mouseleave)="onMouseLeave(video.idx)"
            (click)="openModal(video)">
         <ng-container *ngIf="hoveredVideoId === video.idx; else thumbImg">
-          <video [src]="video.fileUrl" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+          <video [src]="videoStreamIdx" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>
         </ng-container>
         <ng-template #thumbImg>
           <img [src]="video.thumbnailUrl || '/assets/default-thumbnail.svg'" [alt]="video.title" (error)="onImageError($event)" />

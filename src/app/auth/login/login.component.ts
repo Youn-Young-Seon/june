@@ -38,7 +38,6 @@ export class LoginComponent {
     this.authService.signIn(this.loginData)
       .subscribe({
         next: (response) => {
-          console.log(response);
           const accessToken: string = Object.getOwnPropertyDescriptor(response, 'access_token')?.value;
           this.authService.setToken(accessToken);
           this.close();

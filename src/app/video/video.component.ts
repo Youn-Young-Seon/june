@@ -4,11 +4,13 @@ import { VideoService } from './video.service';
 import { Video } from './types';
 import { UploadService } from '../upload/upload.service';
 import { environment } from '../../environments/environment';
+import { debounceTime, Subject } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-video',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss']
 })
@@ -17,13 +19,13 @@ export class VideoComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  // 모달 재생용
   selectedVideo: Video | null = null;
   showModal = false;
 
   hoveredVideoId: string | null = null;
+  videoStreamUrl: string | null = null;
 
-  videoStreamIdx: string | null = null;
+  hoverVideoSubject$ = new Subject<string | null>();
 
   constructor(
     private videoService: VideoService,
@@ -36,6 +38,21 @@ export class VideoComponent implements OnInit {
     this.uploadService.uploadFinished$.subscribe(() => {
       this.loadVideos();
     });
+
+    this.hoverVideoSubject$
+      .pipe(debounceTime(250))
+      .subscribe((videoId) => {
+        if (videoId) {
+          this.videoStreamUrl = `${environment.apiUrl}/video/stream/${videoId}`;
+        } else {
+          this.videoStreamUrl = null;
+        }
+      }
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.hoverVideoSubject$.unsubscribe();
   }
 
   loadVideos(): void {
@@ -51,17 +68,6 @@ export class VideoComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  openModal(video: Video): void {
-    this.selectedVideo = video;
-    this.showModal = true;
-    this.hoveredVideoId = null;
-  }
-
-  closeModal(): void {
-    this.showModal = false;
-    this.selectedVideo = null;
   }
 
   formatViews(views: number): string {
@@ -88,12 +94,11 @@ export class VideoComponent implements OnInit {
 
   onMouseEnter(videoId: string): void {
     this.hoveredVideoId = videoId;
-    this.videoStreamIdx = `${environment.apiUrl}/video/stream/${videoId}`;
+    this.hoverVideoSubject$.next(videoId);
   }
 
-  onMouseLeave(videoId: string): void {
-    if (this.hoveredVideoId === videoId) {
-      this.hoveredVideoId = null;
-    }
+  onMouseLeave(): void {
+    this.hoveredVideoId = null;
+    this.videoStreamUrl = null;
   }
 }

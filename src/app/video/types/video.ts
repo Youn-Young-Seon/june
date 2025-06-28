@@ -4,7 +4,7 @@ type Video = {
     description: string;
     filename: string;
     fileUrl: string;
-    thumbnailUrl?: string;
+    thumbnail?: any;
     uploadDate: string;
     duration?: number;
     size?: number;

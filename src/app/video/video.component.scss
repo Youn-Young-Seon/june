@@ -107,7 +107,7 @@
 
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
   gap: 1.5rem;
 }
 
@@ -130,8 +130,8 @@
 }
 
 .thumb-wrap {
-  width: 300px;
-  height: 180px;
+  width: 700px;
+  height: 394px;
   position: relative;
   background: #f3f4f6;
   overflow: hidden;
@@ -143,8 +143,8 @@
 
 .thumb-wrap img,
 .thumb-wrap video {
-  width: 300px !important;
-  height: 180px !important;
+  width: 700px !important;
+  height: 394px !important;
   object-fit: cover;
   display: block;
   border-radius: 0;
@@ -203,7 +203,7 @@
   border-radius: 0.75rem;
   box-shadow: 0 8px 32px rgba(0,0,0,0.2);
   z-index: 1001;
-  min-width: 320px;
+  min-width: 700px;
   max-width: 90vw;
   padding: 1.5rem 1rem 1rem 1rem;
 }
@@ -303,7 +303,7 @@
   
   .thumb-wrap, .thumb-wrap img, .thumb-wrap video {
     width: 100% !important;
-    height: 180px !important;
+    height: 394px !important;
     min-width: 0;
   }
 }

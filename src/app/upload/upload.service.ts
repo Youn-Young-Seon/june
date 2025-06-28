@@ -69,7 +69,7 @@ export class UploadService {
 
   // 파일 타입 검증
   validateFileType(file: File): boolean {
-    const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov'];
+    const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov', 'video/quicktime'];
     return allowedTypes.includes(file.type);
   }
 

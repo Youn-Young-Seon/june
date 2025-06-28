@@ -25,17 +25,11 @@ export class VideoDetailComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.videoService.getVideoById(id).subscribe({
-        next: (video) => {
+        this.videoService.getVideoById(id).subscribe((video) => {
           this.video = video;
-          this.streamUrl = `${environment.apiUrl}/video/stream/${video.idx}`;
+          this.streamUrl = `${environment.apiUrl}/video/stream/${id}`;
           this.loading = false;
-        },
-        error: () => {
-          this.error = '비디오 정보를 불러올 수 없습니다.';
-          this.loading = false;
-        }
-      });
+        });        
     }
   }
 }

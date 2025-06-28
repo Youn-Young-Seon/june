@@ -38,7 +38,7 @@ export class UploadComponent {
       }
       
       if (!this.uploadService.validateFileSize(file)) {
-        alert('File size must be less than 100MB');
+        alert('File size must be less than 1GB');
         return;
       }
       

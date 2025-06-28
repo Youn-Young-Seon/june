@@ -48,7 +48,7 @@ export class VideoComponent implements OnInit {
           this.videoStreamUrl = null;
         }
       }
-    )
+    )    
   }
 
   ngOnDestroy(): void {
@@ -62,6 +62,10 @@ export class VideoComponent implements OnInit {
       next: (videos) => {
         this.videos = videos;
         this.loading = false;
+
+        this.videos.map((video) => {
+          video.thumbnail = `${environment.apiUrl}/video/${video.idx}/thumbnail`;
+        })
       },
       error: () => {
         this.error = '비디오 목록을 불러오지 못했습니다.';

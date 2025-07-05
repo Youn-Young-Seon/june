@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  idx       Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @default(user)
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Video Video[]
+  Message Message[]
+}
+
+enum Role {
+  admin
+  user
+}
+
+model Video {
+    idx Int @id @default(autoincrement())
+    title         String
+    description   String?
+    originalName  String   // 업로드된 원본 파일명
+    fileName      String   // 서버에 저장된 파일명(중복 방지용)
+    filePath      String   // 서버에 저장된 전체 경로
+    thumbnailPath String?  // 썸네일 경로
+    mimeType      String
+    size          Int      // 파일 크기 (byte)
+    uploadedById  Int     // 업로더(사용자) ID (User와 연관)
+    uploadedBy    User    @relation(fields: [uploadedById], references: [idx])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model ChatRoom {
+    idx         Int      @id @default(autoincrement())
+    name        String
+    description String?
+    isPrivate   Boolean  @default(false)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    
+    Message Message[]
+}
+
+model Message {
+    idx        Int      @id @default(autoincrement())
+    content    String
+    messageType MessageType @default(TEXT)
+    
+    userId     Int
+    user       User     @relation(fields: [userId], references: [idx], onDelete: Cascade)
+    
+    chatRoomId Int
+    chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [idx], onDelete: Cascade)
+    
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
+
+enum MessageType {
+    TEXT
+    IMAGE
+    FILE
+    SYSTEM
+}

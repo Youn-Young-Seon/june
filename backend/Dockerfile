@@ -18,7 +18,7 @@ COPY . .
 
 # Prisma 클라이언트 생성
 RUN pnpm prisma generate
-
+RUN pnpm prisma migrate deploy
 
 # NestJS 개발 서버 실행
 CMD ["pnpm", "start:dev"]

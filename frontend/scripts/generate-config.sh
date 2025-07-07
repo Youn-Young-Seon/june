@@ -6,7 +6,7 @@ mkdir -p /usr/src/app/src/assets/config
 # 환경변수 기반으로 config.json 생성
 cat > /usr/src/app/src/assets/config/config.json << EOF
 {
-  "apiUrl": "${API_URL:-http://localhost:3000}/api",
+  "apiUrl": "${API_URL:-http://localhost:3001}/api",
   "production": ${PRODUCTION:-false}
 }
 EOF

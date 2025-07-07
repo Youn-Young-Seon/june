@@ -16,8 +16,5 @@ RUN pnpm i
 # 나머지 파일/폴더 복사
 COPY . .
 
-# Prisma 클라이언트 생성
-RUN pnpm prisma generate
-
 # NestJS 개발 서버 실행
 CMD ["pnpm", "start:dev"]

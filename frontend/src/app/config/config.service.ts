@@ -40,7 +40,7 @@ export class ConfigService {
     const hostname = window.location.hostname;
     
     // Docker 환경에서 일반적인 백엔드 포트들 시도
-    const possiblePorts = [3000, 8080, 8000, 5000];
+    const possiblePorts = [3001, 8080, 8000, 5001];
     
     return this.detectAvailableBackend(protocol, hostname, possiblePorts).pipe(
       map(apiUrl => {
@@ -53,7 +53,7 @@ export class ConfigService {
       catchError(() => {
         // 모든 감지 실패 시 기본값 사용
         this.config = {
-          apiUrl: 'http://localhost:3000/api',
+          apiUrl: 'http://localhost:3001/api',
           production: false
         };
         return of(this.config);

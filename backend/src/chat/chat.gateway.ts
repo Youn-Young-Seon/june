@@ -1,18 +1,29 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { Socket, Server } from 'socket.io';
+import { Logger } from '@nestjs/common';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:4200',
+    credentials: true,
+  },
+})
 export class ChatGateway {
-  constructor(private readonly chatService: ChatService) {}
-  
+  private logger = new Logger('ChatGateway');
+
+  constructor(
+    private readonly chatService: ChatService
+  ) {}
+
   @WebSocketServer()
   private server: Server;
 
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, roomId: string) {
+    this.logger.log(`Client ${client.id} joined room ${roomId}`);
     client.join(roomId);
-    return { message: 'joined room' };
+    return { message: `joined room ${roomId}` };
   }
 
   @SubscribeMessage('leaveRoom')
@@ -42,23 +53,5 @@ export class ChatGateway {
     });
 
     return { message: 'Message sent successfully' };
-  }
-
-  @SubscribeMessage('getRoomMessages')
-  async getRoomMessages(client: Socket, roomId: string) {
-    const messages = await this.chatService.getRoomMessages(parseInt(roomId));
-    return { messages };
-  }
-
-  @SubscribeMessage('getRooms')
-  async getRooms(client: Socket) {
-    const rooms = await this.chatService.getRooms();
-    return { rooms };
-  }
-
-  @SubscribeMessage('createRoom')
-  async createRoom(client: Socket, payload: { name: string; description?: string; createdBy: number }) {
-    const room = await this.chatService.createRoom(payload);
-    return { room };
   }
 }

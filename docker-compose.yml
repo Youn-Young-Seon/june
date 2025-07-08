@@ -14,6 +14,11 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - WATCHPACK_AGGREGATION_TIMEOUT=300
+      - WATCHPACK_POLLING_INTERVAL=100
 
   postgres:
     image: postgres:16
@@ -41,3 +46,8 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - WATCHPACK_AGGREGATION_TIMEOUT=300
+      - WATCHPACK_POLLING_INTERVAL=100

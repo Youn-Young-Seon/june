@@ -10,7 +10,7 @@ import { RoleBasedGuard } from './guards';
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'myJun0913',
-      signOptions: { expiresIn: '30s' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],

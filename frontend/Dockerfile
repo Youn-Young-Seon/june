@@ -13,6 +13,5 @@ RUN npm install
 # 나머지 파일/폴더 복사
 COPY . .
 
-
 # Angular 개발 서버 실행
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]

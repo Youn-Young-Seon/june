@@ -1,0 +1,96 @@
+<!-- 채팅 버튼 (오른쪽 하단) -->
+<div class="chat-button-container" [class.active]="isChatOpen" *ngIf="isBrowser">
+  <button 
+    class="chat-toggle-button" 
+    (click)="toggleChat()"
+    [class.has-notifications]="getUnreadCount() > 0"
+    [attr.aria-label]="isChatOpen ? '채팅창 닫기' : '채팅창 열기'">
+    
+    <!-- 채팅 아이콘 -->
+    <svg class="chat-icon" viewBox="0 0 24 24" fill="currentColor" [style.display]="isChatOpen ? 'none' : 'block'">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+    </svg>
+    
+    <!-- 닫기 아이콘 -->
+    <svg class="close-icon" viewBox="0 0 24 24" fill="currentColor" [style.display]="isChatOpen ? 'block' : 'none'">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </svg>
+    
+    <!-- 알림 배지 -->
+    <span class="notification-badge" *ngIf="getUnreadCount() > 0">
+      {{ getUnreadCount() > 9 ? '9+' : getUnreadCount() }}
+    </span>
+  </button>
+</div>
+
+<!-- 채팅창 -->
+<div class="chat-window" [class.open]="isChatOpen" *ngIf="isBrowser">
+  <!-- 채팅 헤더 -->
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <div class="admin-avatar">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+      <div class="chat-header-text">
+        <h3 class="admin-name">관리자</h3>
+        <span class="admin-status">온라인</span>
+      </div>
+    </div>
+    <button class="close-button" (click)="toggleChat()" aria-label="채팅창 닫기">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- 메시지 영역 -->
+  <div class="chat-messages" #chatMessages>
+    <div 
+      *ngFor="let message of messages" 
+      class="message-container"
+      [class.user-message]="message.sender === 'user'"
+      [class.admin-message]="message.sender === 'admin'">
+      
+      <div class="message-bubble">
+        <div class="message-text">{{ message.text }}</div>
+        <div class="message-time">{{ formatTime(message.timestamp) }}</div>
+      </div>
+    </div>
+    
+    <!-- 타이핑 표시 -->
+    <div class="message-container admin-message" *ngIf="isTyping">
+      <div class="message-bubble typing">
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메시지 입력 영역 -->
+  <div class="chat-input-container">
+    <div class="input-wrapper">
+      <textarea 
+        class="message-input"
+        [(ngModel)]="newMessage"
+        (keydown)="onKeyPress($event)"
+        placeholder="메시지를 입력하세요..."
+        rows="1"
+        #messageInput>
+      </textarea>
+      <button 
+        class="send-button" 
+        (click)="sendMessage()"
+        [disabled]="!newMessage.trim()"
+        aria-label="메시지 전송">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

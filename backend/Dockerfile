@@ -7,9 +7,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 
+RUN npm install -g nodemon
+
 # PNPM 설치
 RUN npm i -g pnpm
-
 # 의존성 설치
 RUN pnpm i
 

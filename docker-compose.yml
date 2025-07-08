@@ -19,6 +19,8 @@ services:
       - WATCHPACK_POLLING=true
       - WATCHPACK_AGGREGATION_TIMEOUT=300
       - WATCHPACK_POLLING_INTERVAL=100
+      - NEST_WATCH=true
+      - NEST_PRESERVE_WATCH_OUTPUT=true
 
   postgres:
     image: postgres:16

@@ -21,7 +21,6 @@ export class ChatGateway {
 
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, roomId: string) {
-    this.logger.log(`Client ${client.id} joined room ${roomId}`);
     client.join(roomId);
     return { message: `joined room ${roomId}` };
   }
@@ -36,8 +35,6 @@ export class ChatGateway {
   async sendMessage(client: Socket, payload: { roomId: string; message: string; userId: string }) {
     const { roomId, message, userId } = payload;
     
-    this.logger.log(`roomId ${roomId} message ${message} userId ${userId}`);
-
     // 메시지를 채팅방의 모든 클라이언트에게 브로드캐스트
     this.server.to(roomId).emit('receiveMessage', {
       message,

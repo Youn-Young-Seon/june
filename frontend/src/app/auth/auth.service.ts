@@ -45,7 +45,15 @@ export class AuthService {
     }
 
     isLoggedIn() {
-        return !!this.getToken();
+        if (isPlatformBrowser(this.platformId)) {
+            const token = localStorage.getItem(this.ACCESS_TOKEN);
+            if (token && this.isTokenExpired(token)) {
+                this.removeToken();
+                return false;
+            }
+            return !!token;
+        }
+        return false;
     }
 
     // JWT 토큰의 만료 시간을 확인하는 메서드

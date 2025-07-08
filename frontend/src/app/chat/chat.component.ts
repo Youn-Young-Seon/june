@@ -30,8 +30,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (!this.isBrowser) return;
     this.chatSocket.connect();
     this.chatSocket.onMessage().subscribe((msg: ChatMessage) => {
-      this.messages.push(msg);
-      this.scrollToBottom();
+      // 중복 메시지 방지
+      if (!this.messages.some(m => m.id === msg.id)) {
+        this.messages.push(msg);
+        this.scrollToBottom();
+      }
     });
   }
 

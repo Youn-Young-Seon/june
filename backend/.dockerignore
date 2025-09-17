@@ -1,0 +1,53 @@
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# NestJS
+dist
+.nest
+
+# Database
+*.db
+*.sqlite
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Logs
+*.log
+logs
+
+# Coverage
+coverage
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+test/coverage
+
+# Don't ignore essential files/folders for Docker
+!scripts/
+!prisma/migrations/
+!prisma/schema.prisma 

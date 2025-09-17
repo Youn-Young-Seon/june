@@ -1,0 +1,14 @@
+<div class="video-detail" *ngIf="!loading && video">
+    <div class="player-wrap">
+        <video [src]="streamUrl" controls autoplay style="width:100%;max-height:60vh;background:#000;"></video>
+    </div>
+    <div class="video-title">{{ video.title }}</div>
+    <div class="video-meta">
+        <span>{{ video.uploader || '알 수 없음' }}</span>
+        <span>조회수 {{ video.views || 0 }}</span>
+        <span>· {{ video.uploadDate | date:'yyyy.MM.dd' }}</span>
+    </div>
+    <div class="video-desc">{{ video.description }}</div>
+</div>
+<div *ngIf="loading" class="loading">불러오는 중...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

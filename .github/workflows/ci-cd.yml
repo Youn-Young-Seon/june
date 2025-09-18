@@ -47,7 +47,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}          
           script: |
-            cd /jun/june
+            cd /jun
             git pull origin develop
             kubectl apply -f ./infra/
             kubectl apply -f ./backend/infra/k8s/

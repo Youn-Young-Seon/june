@@ -7,7 +7,7 @@ RUN npm install -g pnpm
 RUN apk add --no-cache ffmpeg libc6-compat
 
 COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install
+RUN pnpm install --include=dev
 
 COPY . .
 

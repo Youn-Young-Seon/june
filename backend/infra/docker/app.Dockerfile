@@ -7,6 +7,8 @@ WORKDIR /usr/src/app
 RUN npm install -g pnpm
 RUN apk add --no-cache ffmpeg
 
+COPY package.json pnpm-lock.yaml* ./
+
 RUN pnpm install
 
 # Copy source code and prisma schema

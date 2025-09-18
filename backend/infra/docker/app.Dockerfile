@@ -7,9 +7,6 @@ WORKDIR /usr/src/app
 RUN npm install -g pnpm
 RUN apk add --no-cache ffmpeg
 
-# Copy dependency manifests
-COPY package.json pnpm-lock.yaml ./
-
 # Install all dependencies (including devDependencies for build)
 RUN pnpm install --frozen-lockfile
 

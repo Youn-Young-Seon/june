@@ -11,7 +11,7 @@ RUN pnpm install
 COPY backend/. .
 
 RUN npx prisma generate
-RUN pnpm run build
+RUN pnpm run build 
 
 EXPOSE 5000
 CMD ["node", "dist/main"]

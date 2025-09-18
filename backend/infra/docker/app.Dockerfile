@@ -7,8 +7,7 @@ WORKDIR /usr/src/app
 RUN npm install -g pnpm
 RUN apk add --no-cache ffmpeg
 
-# Install all dependencies (including devDependencies for build)
-RUN pnpm install --frozen-lockfile
+RUN pnpm Install
 
 # Copy source code and prisma schema
 COPY . .

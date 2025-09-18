@@ -3,24 +3,16 @@ FROM node:22-alpine AS builder
 
 WORKDIR /usr/src/app
 
-# Install pnpm and ffmpeg
 RUN npm install -g pnpm
-RUN apk add --no-cache ffmpeg
+RUN apk add --no-cache ffmpeg libc6-compat
 
 COPY package.json pnpm-lock.yaml* ./
-
 RUN pnpm install
 
-# Copy source code and prisma schema
 COPY . .
 
-EXPOSE 5000
-
-# Generate Prisma client
 RUN pnpm prisma generate
-
-# Build the application
 RUN pnpm run build 
 
-# Start the application
+EXPOSE 5000
 CMD ["pnpm", "run", "start:dev"]

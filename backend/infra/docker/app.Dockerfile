@@ -11,7 +11,7 @@ RUN pnpm install --include=dev
 
 COPY . .
 
-RUN pnpm exec prisma generate
+RUN npx prisma generate
 RUN pnpm run build 
 
 EXPOSE 5000

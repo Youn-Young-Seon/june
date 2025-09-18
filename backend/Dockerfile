@@ -1,21 +1,50 @@
-# Node.js Alpine 이미지 사용
-FROM node:alpine AS development
+# Stage 1: Install dependencies
+FROM node:22-alpine AS builder
 
 WORKDIR /usr/src/app
 
-# package.json과 pnpm-lock.yaml 복사
-COPY package*.json ./
-COPY pnpm-lock.yaml ./
+# Install pnpm and ffmpeg
+RUN npm install -g pnpm && apk add --no-cache ffmpeg
 
-RUN npm install -g nodemon
+# Copy dependency definition files
+COPY backend/package.json backend/pnpm-lock.yaml ./
 
-# PNPM 설치
-RUN npm i -g pnpm
-# 의존성 설치
-RUN pnpm i
+# Install dependencies
+RUN pnpm install
 
-# 나머지 파일/폴더 복사
-COPY . .
+# Copy the rest of the application source code
+COPY backend/. .
 
-# NestJS 개발 서버 실행
-CMD ["pnpm", "start:dev"]
+# Generate Prisma client
+RUN npx prisma generate
+
+# Build the application
+RUN pnpm run build
+
+# Stage 2: Create production image
+FROM node:22-alpine AS production
+
+WORKDIR /usr/src/app
+
+# Install pnpm and ffmpeg
+RUN npm install -g pnpm && apk add --no-cache ffmpeg
+
+# Copy dependency definition files
+COPY backend/package.json backend/pnpm-lock.yaml ./
+
+# Install only production dependencies
+RUN pnpm install --prod
+
+# Copy the built application from the builder stage
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Copy prisma schema
+COPY --from=builder /usr/src/app/prisma ./prisma
+COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+
+
+# Expose the application port
+EXPOSE 5000
+
+# Command to run the application
+CMD ["node", "dist/main"]

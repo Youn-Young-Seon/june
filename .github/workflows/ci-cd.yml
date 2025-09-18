@@ -27,6 +27,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -f backend/infra/docker/app.Dockerfile -t june-backend .
+          docker build -f frontend/infra/docker/app.Dockerfile -t june-frontend .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -38,6 +39,8 @@ jobs:
         run: |
           docker tag june-backend ${{ secrets.DOCKER_USER }}/june-backend:latest
           docker push ${{ secrets.DOCKER_USER }}/june-backend:latest
+          docker tag june-frontend ${{ secrets.DOCKER_USER }}/june-frontend:latest
+          docker push ${{ secrets.DOCKER_USER }}/june-frontend:latest
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
@@ -51,3 +54,4 @@ jobs:
             git pull origin develop
             kubectl apply -f ./infra/
             kubectl apply -f ./backend/infra/k8s/
+            kubectl apply -f ./frontend/infra/k8s/

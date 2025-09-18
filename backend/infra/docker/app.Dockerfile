@@ -12,7 +12,9 @@ RUN pnpm install --include=dev
 COPY backend ./backend
 WORKDIR /usr/src/app/backend
 
-RUN npx prisma generate --schema=./backend/prisma/schema.prisma
+RUN npx prisma generate
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate --schema=./prisma/schema.prisma
+
 RUN pnpm run build 
 
 EXPOSE 5000

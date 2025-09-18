@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nest-app
-        image: youngseon360/june-nest:latest  # 실제 이미지로 변경
+        image: youngseon360/june:latest  # 실제 이미지로 변경
         ports:
         - containerPort: 5000
         env:

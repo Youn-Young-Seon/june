@@ -39,8 +39,8 @@ RUN pnpm install --prod
 COPY --from=builder /usr/src/app/dist ./dist
 
 # Copy prisma schema
-COPY --from=builder /usr/src/app/prisma ./prisma
-COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /usr/src/app/prisma ./backend/prisma
+COPY --from=builder /usr/src/app/node_modules/.prisma ./backend/node_modules/.prisma
 
 
 # Expose the application port

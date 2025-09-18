@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 RUN npm install -g pnpm
 RUN apk add --no-cache ffmpeg
 
-RUN pnpm Install
+RUN pnpm install
 
 # Copy source code and prisma schema
 COPY . .

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nest-app
+  template:
+    metadata:
+      labels:
+        app: nest-app
+    spec:
+      containers:
+      - name: nest-app
+        image: youngseon360/june-nest:latest  # 실제 이미지로 변경
+        ports:
+        - containerPort: 5000
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: DATABASE_URL

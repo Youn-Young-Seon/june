@@ -11,7 +11,7 @@ RUN pnpm install --include=dev
 
 COPY . .
 
-RUN npx prisma generate
+RUN npx prisma generate --schema=./backend/prisma/schema.prisma
 RUN pnpm run build 
 
 EXPOSE 5000

@@ -6,10 +6,11 @@ WORKDIR /usr/src/app
 RUN npm install -g pnpm
 RUN apk add --no-cache ffmpeg libc6-compat
 
-COPY package.json pnpm-lock.yaml* ./
+COPY backend/package.json backend/pnpm-lock.yaml* ./
 RUN pnpm install --include=dev
 
-COPY . .
+COPY backend ./backend
+WORKDIR /usr/src/app/backend
 
 RUN npx prisma generate --schema=./backend/prisma/schema.prisma
 RUN pnpm run build 

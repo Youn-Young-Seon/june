@@ -8,7 +8,7 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 import { ConfigService } from './config/config.service';
 
 export function initializeApp(configService: ConfigService) {
-  return () => configService.loadConfig();
+  return () => configService.loadAppConfig();
 }
 
 export const appConfig: ApplicationConfig = {

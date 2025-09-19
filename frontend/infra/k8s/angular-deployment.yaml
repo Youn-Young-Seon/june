@@ -24,4 +24,4 @@ spec:
               name: angular-config
               key: API_URL
         - name: PUBLIC_API_URL
-          value: "https://211.196.219.158/api"
+          value: "http://211.196.219.15/api"

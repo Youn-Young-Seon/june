@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { LoginData, RegisterData } from "./types";
-import { environment } from "../../environments/environment";
 import { isPlatformBrowser } from "@angular/common";
+import { ConfigService } from "../config/config.service";
 
 @Injectable({
     providedIn: 'root'
@@ -13,15 +13,16 @@ export class AuthService {
     constructor(
         private http: HttpClient,
         @Inject(PLATFORM_ID)
-        private platformId: Object
+        private platformId: Object,
+        private configService: ConfigService
     ) {}
 
     signIn(loginData: LoginData) {
-        return this.http.post(`${environment.apiUrl}/login`, loginData);
+        return this.http.post(`${this.configService.apiUrl}/login`, loginData);
     }
 
     register(registerData: RegisterData) {
-        return this.http.post(`${environment.apiUrl}/user`, registerData);
+        return this.http.post(`${this.configService.apiUrl}/user`, registerData);
     }
 
     setToken(token: string) {
@@ -90,3 +91,4 @@ export class AuthService {
         }
     }
 }
+

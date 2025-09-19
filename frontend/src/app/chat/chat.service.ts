@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { ChatMessage } from './interface';
-import { environment } from '../../environments/environment';
 import { AuthService } from '../auth/auth.service';
+import { ConfigService } from '../config/config.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
@@ -11,14 +11,15 @@ export class ChatSocketService {
   private idx: string | null = null;
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private configService: ConfigService
   ) {
     this.idx = this.authService.getToken();
   }
 
   connect() {
     if (!this.socket) {
-      this.socket = io(`${environment.wsUrl}`, {
+      this.socket = io(this.configService.wsUrl, {
         withCredentials: true
       });
       this.socket.emit('joinRoom', this.idx);
@@ -43,4 +44,4 @@ export class ChatSocketService {
       });
     });
   }
-} 
+}

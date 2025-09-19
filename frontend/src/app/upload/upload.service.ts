@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Observable, Subject, map } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ConfigService } from '../config/config.service';
 
 export interface UploadProgress {
   progress: number;
@@ -19,11 +19,9 @@ export interface VideoUploadData {
   providedIn: 'root'
 })
 export class UploadService {
-  private apiUrl = `${environment.apiUrl}`;
-
   uploadFinished$ = new Subject<void>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private configService: ConfigService) {}
 
   uploadVideo(videoData: VideoUploadData): Observable<UploadProgress> {
     const formData = new FormData();
@@ -31,7 +29,7 @@ export class UploadService {
     formData.append('description', videoData.description);
     formData.append('file', videoData.file);
 
-    return this.http.post(`${this.apiUrl}/video/upload`, formData, {
+    return this.http.post(`${this.configService.apiUrl}/video/upload`, formData, {
       reportProgress: true,
       observe: 'events'
     }).pipe(
@@ -76,4 +74,4 @@ export class UploadService {
   notifyUploadFinished(): void {
     this.uploadFinished$.next();
   }
-} 
+}  

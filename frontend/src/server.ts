@@ -41,7 +41,7 @@ console.log("========================================================");
 
 app.get('/app-config', (req, res) => {
   res.json({
-    apiUrl: process.env['API_URL'] || 'http://localhost:5000/api', // 환경변수가 없으면 fallback
+    apiUrl: process.env['PUBLIC_API_URL'] || process.env['API_URL'] || 'http://localhost:5000/api', // 환경변수가 없으면 fallback
   });
 });
 

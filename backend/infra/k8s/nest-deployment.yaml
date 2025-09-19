@@ -12,6 +12,16 @@ spec:
       labels:
         app: nest-app
     spec:
+      initContainers:
+      - name: prisma-migrate
+        image: youngseon360/june-backend:latest # 메인 컨테이너와 동일한 이미지 사용
+        command: ["sh", "-c", "pnpm prisma migrate deploy"]
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: DATABASE_URL
       containers:
       - name: nest-app
         image: youngseon360/june-backend:latest  # 실제 이미지로 변경

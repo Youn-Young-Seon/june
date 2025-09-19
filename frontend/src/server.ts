@@ -12,6 +12,21 @@ const indexHtml = join(serverDistFolder, 'index.server.html');
 const app = express();
 const commonEngine = new CommonEngine();
 
+
+// ===================================================================
+// ============== 임시 디버깅 코드: 이 부분을 추가하세요 ==============
+// ===================================================================
+console.log("========================================================");
+console.log("=========== DUMPING ALL ENVIRONMENT VARIABLES ==========");
+console.log("========================================================");
+console.log(process.env);
+console.log("========================================================");
+console.log(`SPECIFIC CHECK FOR API_URL: [${process.env['API_URL']}]`);
+console.log("========================================================");
+// ===================================================================
+
+// ... app.get('/app-config', ...); 등 나머지 코드
+
 /**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.

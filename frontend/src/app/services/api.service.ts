@@ -7,60 +7,37 @@ import { ConfigService } from '../config/config.service';
   providedIn: 'root'
 })
 export class ApiService {
+  private apiUrl: string;
+
   constructor(
     private http: HttpClient,
     private configService: ConfigService
-  ) {}
+  ) {
+    this.apiUrl = this.configService.getApiUrl();
+  }
 
   // GET 요청
   get<T>(endpoint: string): Observable<T> {
-    return this.configService.loadConfig().pipe(
-      switchMap(config => 
-        this.http.get<T>(`${config.apiUrl}${endpoint}`)
-      )
-    );
+    return this.http.get<T>(`${this.apiUrl}${endpoint}`);
   }
 
   // POST 요청
   post<T>(endpoint: string, data: any): Observable<T> {
-    return this.configService.loadConfig().pipe(
-      switchMap(config => 
-        this.http.post<T>(`${config.apiUrl}${endpoint}`, data)
-      )
-    );
+    return this.http.post<T>(`${this.apiUrl}${endpoint}`, data);
   }
 
   // PUT 요청
   put<T>(endpoint: string, data: any): Observable<T> {
-    return this.configService.loadConfig().pipe(
-      switchMap(config => 
-        this.http.put<T>(`${config.apiUrl}${endpoint}`, data)
-      )
-    );
+    return this.http.put<T>(`${this.apiUrl}${endpoint}`, data);
   }
 
   // DELETE 요청
   delete<T>(endpoint: string): Observable<T> {
-    return this.configService.loadConfig().pipe(
-      switchMap(config => 
-        this.http.delete<T>(`${config.apiUrl}${endpoint}`)
-      )
-    );
+    return this.http.delete<T>(`${this.apiUrl}${endpoint}`);
   }
 
   // 파일 업로드
   upload<T>(endpoint: string, formData: FormData): Observable<T> {
-    return this.configService.loadConfig().pipe(
-      switchMap(config => 
-        this.http.post<T>(`${config.apiUrl}${endpoint}`, formData)
-      )
-    );
-  }
-
-  // 현재 API URL 가져오기
-  getCurrentApiUrl(): Observable<string> {
-    return this.configService.loadConfig().pipe(
-      switchMap(config => [config.apiUrl])
-    );
+    return this.http.post<T>(`${this.apiUrl}${endpoint}`, formData);
   }
 } 

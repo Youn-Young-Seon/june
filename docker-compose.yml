@@ -49,6 +49,8 @@ services:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
     environment:
+      - API_URL=http://backend:3001/api
+      - WS_URL=ws://backend:3001
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
       - WATCHPACK_AGGREGATION_TIMEOUT=300

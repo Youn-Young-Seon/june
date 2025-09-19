@@ -17,3 +17,9 @@ spec:
         image: youngseon360/june-frontend:latest  # 실제 이미지로 변경
         ports:
         - containerPort: 4200
+        env:
+        - name: API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: angular-config
+              key: API_URL

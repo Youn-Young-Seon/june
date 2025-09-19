@@ -4,3 +4,4 @@ metadata:
   name: angular-config
 data:
   API_URL: "http://nginx-service/api"
+  PUBLIC_API_URL: "http://211.196.219.15/api"

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: angular-app
-        image: youngseon360/june-frontend:latest  # 실제 이미지로 변경
+        image: youngseon360/june-frontend:latest
         ports:
         - containerPort: 4200
         env:
@@ -24,4 +24,7 @@ spec:
               name: angular-config
               key: API_URL
         - name: PUBLIC_API_URL
-          value: "http://211.196.219.15/api"
+          valueFrom:
+              configMapKeyRef:
+                name: angular-config
+                key: PUBLIC_API_URL

@@ -1,6 +1,26 @@
+# Git
 .git
-.gitignore
-node_modules
-npm-debug.log
-dist
+.github
+
+# IDE
 .vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend specific
+backend/node_modules
+backend/dist
+backend/.nest
+backend/test/coverage
+backend/.env*
+!backend/.env.example
+
+# Frontend specific
+frontend/node_modules
+frontend/dist
+frontend/.angular
+frontend/.env*
+!frontend/.env.example

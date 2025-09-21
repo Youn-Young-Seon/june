@@ -27,8 +27,8 @@ export class ConfigService {
       // 이렇게 하면 레이스 컨디션 문제가 발생하지 않습니다.
       console.log('Loading config on SERVER directly from process.env');
       this.appConfig = {
-        apiUrl: process.env['API_URL'] || 'http://localhost:5001/api', // k8s 환경변수가 없으면 fallback
-        wsUrl: process.env['WS_URL'] || 'ws://localhost:5001',
+        apiUrl: process.env['API_URL'] || 'http://localhost:5000/api', // k8s 환경변수가 없으면 fallback
+        wsUrl: process.env['WS_URL'] || 'ws://localhost:5000',
       };
 
       return Promise.resolve(); // 설정이 완료되었음을 즉시 알립니다.
@@ -50,14 +50,14 @@ export class ConfigService {
     if (!this.appConfig) {
       // 로컬 개발 중 HMR(Hot-Module-Replacement) 시 여기서 에러가 날 수 있습니다.
       // fallback 값을 제공하여 안정성을 높일 수 있습니다.
-      return 'http://localhost:3001/api';
+      return 'http://localhost:5000/api';
     }
     return this.appConfig.apiUrl;
   }
 
   get wsUrl(): string {
     if (!this.appConfig) {
-      return 'ws://localhost:3001';
+      return 'ws://localhost:5000';
     }
     return this.appConfig.wsUrl;
   }

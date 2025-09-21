@@ -1,5 +1,5 @@
 {
-  "apiUrl": "http://localhost:5001/api",
-  "wsUrl": "ws://localhost:5001/api",
+  "apiUrl": "http://localhost:5000/api",
+  "wsUrl": "ws://localhost:5000/api",
   "production": false
 } 

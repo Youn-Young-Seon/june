@@ -29,7 +29,7 @@ export class UploadService {
     formData.append('description', videoData.description);
     formData.append('file', videoData.file);
 
-    return this.http.post(`${this.configService.apiUrl}/video/upload`, formData, {
+    return this.http.post(`${this.configService.apiUrl}/upload/multiple`, formData, {
       reportProgress: true,
       observe: 'events'
     }).pipe(
@@ -60,14 +60,14 @@ export class UploadService {
   }
 
   // 파일 크기 검증
-  validateFileSize(file: File, maxSizeMB: number = 1000): boolean {
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
-    return file.size <= maxSizeBytes;
-  }
+  // validateFileSize(file: File, maxSizeMB: number = 1000): boolean {
+  //   const maxSizeBytes = maxSizeMB * 1024 * 1024;
+  //   return file.size <= maxSizeBytes;
+  // }
 
   // 파일 타입 검증
   validateFileType(file: File): boolean {
-    const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov', 'video/quicktime'];
+    const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov', 'video/quicktime', 'image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
     return allowedTypes.includes(file.type);
   }
 

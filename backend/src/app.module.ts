@@ -8,6 +8,8 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { VideoModule } from './video/video.module';
 import { ChatModule } from './chat/chat.module';
+import { UploadModule } from './upload/upload.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -23,12 +25,19 @@ import { ChatModule } from './chat/chat.module';
     //     JWT_EXPIRATION: Joi.string().default('1h'),
     //   }),
     // }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'redis',
+        port: 6379,
+      }
+    }),
     LoginModule,
     CommonModule,
     UserModule,
     AuthModule,
     VideoModule,
     ChatModule,
+    UploadModule,
   ],
 })
 export class AppModule implements NestModule {

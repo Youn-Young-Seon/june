@@ -2,26 +2,22 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UploadService, VideoUploadData } from './upload.service';
-import { VideoData } from './types';
+import { forkJoin, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './upload.component.html',
-  styleUrl: './upload.component.scss'
+  styleUrls: ['./upload.component.scss']
 })
 export class UploadComponent {
   @Output() closeModal = new EventEmitter<void>();
 
-  videoData: VideoData = {
-    title: '',
-    description: '',
-    file: null
-  };
-
+  selectedFiles: File[] = [];
   isUploading = false;
-  uploadProgress = 0;
+  uploadProgress: { [key: string]: { progress: number } } = {};
 
   constructor(private uploadService: UploadService) {}
 
@@ -30,44 +26,62 @@ export class UploadComponent {
   }
 
   onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      if (!this.uploadService.validateFileType(file)) {
-        alert('Please select a valid video file (MP4, WebM, OGG, AVI, MOV)');
-        return;
+    const files = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (this.uploadService.validateFileType(file)) {
+          // Prevent adding duplicates
+          if (!this.selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+            this.selectedFiles.push(file);
+            this.uploadProgress[file.name] = { progress: 0 };
+          }
+        } else {
+          alert(`Invalid file type: ${file.name}. Please select valid video or image files.`);
+        }
       }
-      
-      if (!this.uploadService.validateFileSize(file)) {
-        alert('File size must be less than 1GB');
-        return;
-      }
-      
-      this.videoData.file = file;
     }
   }
 
   onSubmit() {
-    if (!this.videoData.file || !this.videoData.title.trim()) {
-      alert('Please fill in all required fields and select a video file');
+    if (this.selectedFiles.length === 0) {
+      alert('Please select one or more files to upload.');
       return;
     }
 
     this.isUploading = true;
-    this.uploadProgress = 0;
+    const allUploads = this.selectedFiles.map(file => {
+      const uploadData: VideoUploadData = {
+        title: file.name, // Use filename as title
+        description: '', // Empty description
+        file: file
+      };
 
-    const uploadData: VideoUploadData = {
-      title: this.videoData.title,
-      description: this.videoData.description,
-      file: this.videoData.file
-    };
+      return this.uploadService.uploadVideo(uploadData).pipe(
+        tap(event => {
+          if (event) {
+            this.uploadProgress[file.name] = { progress: event.progress };
+          }
+        }),
+        catchError(error => {
+          console.error(`Upload failed for ${file.name}:`, error);
+          this.uploadProgress[file.name] = { progress: -1 }; // Indicate failure
+          return of(null); // Continue with other uploads
+        })
+      );
+    });
 
-    this.uploadService.uploadVideo(uploadData).subscribe({
-      next: (progress) => {
-        this.uploadProgress = progress.progress;
+    forkJoin(allUploads).subscribe({
+      // 'next' is called when all observables complete.
+      // Individual results are in the 'results' array.
+      next: (results) => {
+        console.log('All uploads processed:', results);
+        const successfulUploads = results.filter(r => r !== null).length;
+        alert(`${successfulUploads} out of ${this.selectedFiles.length} files uploaded successfully.`);
       },
       error: (error) => {
-        console.error('Upload failed:', error);
-        alert('Upload failed. Please try again.');
+        // This is for unexpected errors in forkJoin itself.
+        console.error('An unexpected error occurred during the upload process:', error);
         this.isUploading = false;
       },
       complete: () => {

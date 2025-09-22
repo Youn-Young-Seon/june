@@ -2,17 +2,18 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Param,
   UseInterceptors,
   UploadedFile,
-  ValidationPipe,
   Logger,
+  UploadedFiles,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
 
 @Controller('upload')
 export class UploadController {
@@ -24,16 +25,29 @@ export class UploadController {
   ) { }
 
   @Post('multiple')
-  @UseInterceptors(FilesInterceptor('files', 1000))
-  async uploadChunk(@UploadedFile() files: Express.Multer.File[]) {
-    const jobs = await Promise.allSettled(
-      files.map(file => {
-        console.log("file: ", file);
-        return this.fileQueue.add('upload', file)
-      })
-    );
-    return jobs;
-  }
+  @UseInterceptors(FilesInterceptor('files', 1000, {
+  storage: diskStorage({
+    destination: join(process.env.UPLOAD_PATH),
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const ext = extname(file.originalname);
+      cb(null, uniqueSuffix + ext);
+    },
+  }),
+}))
+async uploadChunk(@UploadedFiles() files: Express.Multer.File[]) {
+  const jobs = await Promise.allSettled(
+    files.map(file => 
+      this.fileQueue.add('upload', {
+        filename: file.filename, // Multer가 생성한 유니크 파일명
+        path: file.path,         // Multer가 저장한 실제 파일 경로
+        size: file.size,
+      }),
+    ),
+  );
+  this.logger.log(`jobs: ${JSON.stringify(jobs)}`);
+  return jobs;
+}
 
   @Get('job/progress/:jobId')
   async getJobProgress(@Param('jobId') jobId: string) {

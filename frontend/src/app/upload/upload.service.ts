@@ -12,7 +12,7 @@ export interface UploadProgress {
 export interface VideoUploadData {
   title: string;
   description: string;
-  file: File;
+  files: File[];
 }
 
 @Injectable({
@@ -27,7 +27,9 @@ export class UploadService {
     const formData = new FormData();
     formData.append('title', videoData.title);
     formData.append('description', videoData.description);
-    formData.append('file', videoData.file);
+    videoData.files.forEach(file => {
+      formData.append('files', file);
+    });
 
     return this.http.post(`${this.configService.apiUrl}/upload/multiple`, formData, {
       reportProgress: true,

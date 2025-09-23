@@ -23,7 +23,7 @@ export class UploadConsumer extends WorkerHost {
     this.logger.log(`size: ${size}`);
     this.logger.log(`ext: ${extname(originalname)}`);
 
-    const resultPath = await this.moveFile(path, `${join(process.env.UPLOAD_PATH, filename)}`);
+    const resultPath = await this.moveFile(path, `${join(process.env.UPLOAD_PATH, originalname)}`);
     this.logger.log(`resultPath: ${resultPath}`);
 
     return { status: 'success' };

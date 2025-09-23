@@ -18,7 +18,7 @@ import { extname, join } from 'path';
 @Controller('upload')
 export class UploadController {
   private readonly logger = new Logger(UploadController.name);
-  
+
   constructor(
     private readonly uploadService: UploadService,
     @InjectQueue('file-upload') private readonly fileQueue: Queue,
@@ -26,28 +26,24 @@ export class UploadController {
 
   @Post('multiple')
   @UseInterceptors(FilesInterceptor('files', 1000, {
-  storage: diskStorage({
-    destination: join(process.env.UPLOAD_PATH),
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      const ext = extname(file.originalname);
-      cb(null, uniqueSuffix + ext);
-    },
-  }),
-}))
-async uploadChunk(@UploadedFiles() files: Express.Multer.File[]) {
-  const jobs = await Promise.allSettled(
-    files.map(file => 
-      this.fileQueue.add('upload', {
-        filename: file.filename, // Multer가 생성한 유니크 파일명
-        path: file.path,         // Multer가 저장한 실제 파일 경로
-        size: file.size,
-      }),
-    ),
-  );
-  this.logger.log(`jobs: ${JSON.stringify(jobs)}`);
-  return jobs;
-}
+    storage: diskStorage({
+      destination: join(process.env.TMP_PATH),
+    }),
+  }))
+  async uploadChunk(@UploadedFiles() files: Express.Multer.File[]) {
+    const jobs = await Promise.allSettled(
+      files.map(file => {
+        this.logger.log(`file: ${JSON.stringify(file)}`);
+        return this.fileQueue.add('upload', {
+          originalname: file.originalname,
+          filename: file.filename,
+          path: file.path,
+          size: file.size,
+        })
+      })
+    );
+    return jobs;
+  }
 
   @Get('job/progress/:jobId')
   async getJobProgress(@Param('jobId') jobId: string) {

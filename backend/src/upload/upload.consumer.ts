@@ -3,7 +3,7 @@ import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import * as fs from 'fs'
-import { generateFileName } from 'src/utils/file-name.util';
+import { extname, join } from 'path';
 
 @Processor('file-upload')
 export class UploadConsumer extends WorkerHost {
@@ -15,13 +15,16 @@ export class UploadConsumer extends WorkerHost {
 
   async process(job: Job<any, any, string>) {
     let progress = 0;
-    const { filename, path, size } = job.data;
+    const { originalname, filename, path, size } = job.data;
 
+    this.logger.log(`originalname: ${originalname}`);
     this.logger.log(`filename: ${filename}`);
     this.logger.log(`path: ${path}`);
     this.logger.log(`size: ${size}`);
+    this.logger.log(`ext: ${extname(originalname)}`);
 
-    const hashFileName = await generateFileName(path, filename);
+    const resultPath = await this.moveFile(path, `${join(process.env.UPLOAD_PATH, filename)}`);
+    this.logger.log(`resultPath: ${resultPath}`);
 
     return { status: 'success' };
   }
@@ -36,7 +39,7 @@ export class UploadConsumer extends WorkerHost {
     
   }
 
-  private moveFile(srcPath: string, destPath: string): Promise<void> {
+  private moveFile(srcPath: string, destPath: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const readable = fs.createReadStream(srcPath);
       const writable = fs.createWriteStream(destPath);
@@ -47,7 +50,7 @@ export class UploadConsumer extends WorkerHost {
         // 복사 완료 후 원본 파일 삭제
         fs.unlink(srcPath, err => {
           if (err) reject(err);
-          else resolve();
+          else resolve(destPath);
         });
       });
 

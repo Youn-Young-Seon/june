@@ -19,7 +19,7 @@ export class UploadComponent {
   isUploading = false;
   uploadProgress: { [key: string]: { progress: number } } = {};
 
-  constructor(private uploadService: UploadService) { }
+  constructor(private uploadService: UploadService) {}
 
   close() {
     this.closeModal.emit();
@@ -49,29 +49,45 @@ export class UploadComponent {
     }
 
     this.isUploading = true;
+    const allUploads = this.selectedFiles.map(file => {
+      const uploadData: VideoUploadData = {
+        title: file.name, // Use filename as title
+        description: '', // Empty description
+        files: [file]
+      };
 
-    const uploadData: VideoUploadData = {
-      title: 'My Video Upload', // 전체 업로드 대표 제목 등
-      description: '',
-      files: this.selectedFiles,
-    };
+      return this.uploadService.uploadVideo(uploadData).pipe(
+        tap(event => {
+          if (event) {
+            this.uploadProgress[file.name] = { progress: event.progress };
+          }
+        }),
+        catchError(error => {
+          console.error(`Upload failed for ${file.name}:`, error);
+          this.uploadProgress[file.name] = { progress: -1 }; // Indicate failure
+          return of(null); // Continue with other uploads
+        })
+      );
+    });
 
-    this.uploadService.uploadVideo(uploadData).subscribe({
-      next: (event) => {
-        if (event) {
-          // progress 이벤트 처리
-          // 필요시 파일별 progress는 따로 관리 가능
-        }
+    forkJoin(allUploads).subscribe({
+      // 'next' is called when all observables complete.
+      // Individual results are in the 'results' array.
+      next: (results) => {
+        console.log('All uploads processed:', results);
+        const successfulUploads = results.filter(r => r !== null).length;
+        alert(`${successfulUploads} out of ${this.selectedFiles.length} files uploaded successfully.`);
       },
       error: (error) => {
-        console.error('Upload failed:', error);
+        // This is for unexpected errors in forkJoin itself.
+        console.error('An unexpected error occurred during the upload process:', error);
         this.isUploading = false;
       },
       complete: () => {
         this.isUploading = false;
         this.uploadService.notifyUploadFinished();
         this.close();
-      },
+      }
     });
   }
 } 

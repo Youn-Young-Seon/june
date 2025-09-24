@@ -7,42 +7,37 @@ import {
   UploadedFile,
   Logger,
   UploadedFiles,
+  Body,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
+import { UploadRequestDto } from './dto/upload-request.dto';
 
 @Controller('upload')
 export class UploadController {
-  private readonly logger = new Logger(UploadController.name);
-
   constructor(
     private readonly uploadService: UploadService,
     @InjectQueue('file-upload') private readonly fileQueue: Queue,
   ) { }
 
   @Post('multiple')
-  @UseInterceptors(FilesInterceptor('files', 1000, {
+  @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: join(process.env.TMP_PATH),
     }),
   }))
-  async uploadChunk(@UploadedFiles() files: Express.Multer.File[]) {
-    const jobs = await Promise.allSettled(
-      files.map(file => {
-        this.logger.log(`file: ${JSON.stringify(file)}`);
-        return this.fileQueue.add('upload', {
-          originalname: file.originalname,
-          filename: file.filename,
-          path: file.path,
-          size: file.size,
-        })
-      })
-    );
-    return jobs;
+  async uploadChunk(@UploadedFile() file: Express.Multer.File, @Body() body: UploadRequestDto) {
+    return await this.fileQueue.add('upload', {
+      originalname: file.originalname,
+      filename: file.filename,
+      path: file.path,
+      size: file.size,
+      lastModified: body.lastModified,
+    });
   }
 
   @Get('job/progress/:jobId')

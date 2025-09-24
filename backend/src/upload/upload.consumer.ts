@@ -2,8 +2,8 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
-import * as fs from 'fs'
 import { extname, join } from 'path';
+import * as fs from 'fs'
 
 @Processor('file-upload')
 export class UploadConsumer extends WorkerHost {
@@ -14,29 +14,34 @@ export class UploadConsumer extends WorkerHost {
   }
 
   async process(job: Job<any, any, string>) {
-    let progress = 0;
-    const { originalname, filename, path, size } = job.data;
+    const { originalname, filename, path, size, lastModified } = job.data;
 
     this.logger.log(`originalname: ${originalname}`);
     this.logger.log(`filename: ${filename}`);
-    this.logger.log(`path: ${path}`);
+    this.logger.log(`srcPath: ${path}`);
     this.logger.log(`size: ${size}`);
     this.logger.log(`ext: ${extname(originalname)}`);
+    this.logger.log(`lastModified: ${lastModified}`);
+    const dstPath = await this.moveFile(path, `${join(process.env.UPLOAD_PATH, originalname)}`);
+    this.logger.log(`dstPath: ${dstPath}`);
+    const createdDate = new Date(Number(lastModified)).toISOString() ?? new Date(Date.now()).toISOString();
 
-    const resultPath = await this.moveFile(path, `${join(process.env.UPLOAD_PATH, originalname)}`);
-    this.logger.log(`resultPath: ${resultPath}`);
+    job.data.dstPath = dstPath;
+    job.data.createdDate = createdDate;
 
     return { status: 'success' };
   }
 
   @OnWorkerEvent('completed')
-  onCompleted(job: Job) {
-    
+  onCompleted(job: Job<any, any, string>) {
+    this.logger.log(`Job completed: ${JSON.stringify(job.data)}`);
   }
 
   @OnWorkerEvent('failed')
   onFailed(job: Job, err: Error) {
-    
+    if (err) {
+      this.logger.error(`Job failed: ${JSON.stringify(job.data)} with error ${err.message}`);
+    }
   }
 
   private moveFile(srcPath: string, destPath: string): Promise<string> {

@@ -28,7 +28,8 @@ export class UploadService {
     formData.append('title', videoData.title);
     formData.append('description', videoData.description);
     videoData.files.forEach(file => {
-      formData.append('files', file);
+      formData.append('file', file);
+      formData.append('lastModified', file.lastModified.toString());
     });
 
     return this.http.post(`${this.configService.apiUrl}/upload/multiple`, formData, {

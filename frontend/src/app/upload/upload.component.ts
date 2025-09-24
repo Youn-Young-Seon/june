@@ -19,7 +19,7 @@ export class UploadComponent {
   isUploading = false;
   uploadProgress: { [key: string]: { progress: number } } = {};
 
-  constructor(private uploadService: UploadService) {}
+  constructor(private uploadService: UploadService) { }
 
   close() {
     this.closeModal.emit();
@@ -31,10 +31,8 @@ export class UploadComponent {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (this.uploadService.validateFileType(file)) {
-          if (!this.selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
-            this.selectedFiles.push(file);
-            this.uploadProgress[file.name] = { progress: 0 };
-          }
+          this.selectedFiles.push(file);
+          this.uploadProgress[file.name] = { progress: 0 };
         } else {
           alert(`Invalid file type: ${file.name}. Please select valid video or image files.`);
         }
@@ -74,7 +72,6 @@ export class UploadComponent {
       // 'next' is called when all observables complete.
       // Individual results are in the 'results' array.
       next: (results) => {
-        console.log('All uploads processed:', results);
         const successfulUploads = results.filter(r => r !== null).length;
         alert(`${successfulUploads} out of ${this.selectedFiles.length} files uploaded successfully.`);
       },

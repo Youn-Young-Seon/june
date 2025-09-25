@@ -4,6 +4,8 @@ import { Logger } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import { extname, join } from 'path';
 import * as fs from 'fs'
+import { Upload } from './entities/upload.entity';
+import { FileJobData } from './vo/file-job-data';
 
 @Processor('file-upload')
 export class UploadConsumer extends WorkerHost {
@@ -13,18 +15,11 @@ export class UploadConsumer extends WorkerHost {
     super();
   }
 
-  async process(job: Job<any, any, string>) {
-    const { originalname, filename, path, size, lastModified } = job.data;
+  async process(job: Job<FileJobData, any, string>) {
+    const { originalname, path, lastModified } = job.data;
 
-    this.logger.log(`originalname: ${originalname}`);
-    this.logger.log(`filename: ${filename}`);
-    this.logger.log(`srcPath: ${path}`);
-    this.logger.log(`size: ${size}`);
-    this.logger.log(`ext: ${extname(originalname)}`);
-    this.logger.log(`lastModified: ${lastModified}`);
     const dstPath = await this.moveFile(path, `${join(process.env.UPLOAD_PATH, originalname)}`);
-    this.logger.log(`dstPath: ${dstPath}`);
-    const createdDate = new Date(Number(lastModified)).toISOString() ?? new Date(Date.now()).toISOString();
+    const createdDate = new Date(Number(lastModified)) ?? new Date(Date.now());
 
     job.data.dstPath = dstPath;
     job.data.createdDate = createdDate;
@@ -33,15 +28,24 @@ export class UploadConsumer extends WorkerHost {
   }
 
   @OnWorkerEvent('completed')
-  onCompleted(job: Job<any, any, string>) {
-    this.logger.log(`Job completed: ${JSON.stringify(job.data)}`);
+  async onCompleted(job: Job<FileJobData, any, string>) {
+    const uploadData = new Upload(job.data);
+    await this.uploadDataSave(uploadData);
   }
 
   @OnWorkerEvent('failed')
-  onFailed(job: Job, err: Error) {
+  async onFailed(job: Job<FileJobData, any, string>, err: Error) {
     if (err) {
       this.logger.error(`Job failed: ${JSON.stringify(job.data)} with error ${err.message}`);
+      const uploadData = new Upload(job.data);
+      await this.uploadDataSave(uploadData);
     }
+  }
+
+  private async uploadDataSave(data: Upload) {
+    await this.prisma.mediaFile.create({
+      data: { ...data },
+    });
   }
 
   private moveFile(srcPath: string, destPath: string): Promise<string> {

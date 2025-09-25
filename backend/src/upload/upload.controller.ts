@@ -16,9 +16,12 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { UploadRequestDto } from './dto/upload-request.dto';
+import { Util } from 'src/utils/util';
 
 @Controller('upload')
-export class UploadController {
+export class UploadController {  
+  private readonly logger = new Logger(UploadController.name);
+
   constructor(
     private readonly uploadService: UploadService,
     @InjectQueue('file-upload') private readonly fileQueue: Queue,
@@ -29,15 +32,29 @@ export class UploadController {
     storage: diskStorage({
       destination: join(process.env.TMP_PATH),
     }),
+    fileFilter: (req, file, cb) => {
+      if (!Util.allowedMimeTypes.includes(file.mimetype)) {
+        return cb(null, false);
+      }
+      cb(null, true);
+    },
   }))
   async uploadChunk(@UploadedFile() file: Express.Multer.File, @Body() body: UploadRequestDto) {
-    return await this.fileQueue.add('upload', {
-      originalname: file.originalname,
+    const reqFileData = {
+      originalname: Buffer.from(file.originalname, 'latin1').toString('utf8'),
       filename: file.filename,
       path: file.path,
       size: file.size,
       lastModified: body.lastModified,
-    });
+    }
+
+    const validCheck = await this.uploadService.invalidateFile(reqFileData);
+
+    if (!validCheck) {
+      return { message: 'File already exists' };
+    }
+
+    return await this.fileQueue.add('upload', reqFileData);
   }
 
   @Get('job/progress/:jobId')

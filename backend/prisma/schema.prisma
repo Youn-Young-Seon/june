@@ -18,7 +18,6 @@ model User {
 
   Video     Video[]
   Message   Message[]
-  MediaFile MediaFile[]
 }
 
 enum Role {
@@ -75,18 +74,9 @@ enum MessageType {
     SYSTEM
 }
 
-enum UploadStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
-}
-
 model MediaFile {
   id             Int      @id @default(autoincrement())
-  jobId          String   @unique
-  status         UploadStatus @default(PENDING)
-  failReason     String?
+  failCheck    Boolean  @default(false)
   relativePath   String   @map("relative_path")
   filename       String
   extension      String?
@@ -94,10 +84,5 @@ model MediaFile {
   yearFolder     Int?     @map("year_folder")
   monthFolder    String?  @map("month_folder")
   fileModifiedAt DateTime? @map("file_modified_at")
-  
-  uploadedById  Int
-  uploadedBy    User    @relation(fields: [uploadedById], references: [idx])
-
   createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
 }

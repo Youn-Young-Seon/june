@@ -1,0 +1,27 @@
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: redis
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: redis
+      template:
+        metadata:
+          labels:
+            app: redis
+        spec:
+          containers:
+          - name: redis
+            image: redis # 사용할 Redis 이미지
+            ports:
+            - containerPort: 6379
+            volumeMounts:
+            - name: redis-storage
+              mountPath: /etc/redis/
+          volumes:
+          - name: redis-config-volume
+            configMap:
+              name: redis-storage
+              emptyDir: {}

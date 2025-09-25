@@ -12,4 +12,23 @@ export class UploadService {
     private readonly prisma: PrismaService,
   ) { }
 
+  async invalidateFile(fileData: any): Promise<boolean> {
+    const fileDate = new Date(Number(fileData.lastModified)) ?? new Date(Date.now());
+    const year = fileDate.getFullYear();
+    const month = String(fileDate.getMonth() + 1).padStart(2, '0')
+
+    const result = await this.prisma.mediaFile.findFirst({
+      where: {
+        yearFolder: year,
+        monthFolder: month,
+        filename: fileData.originalname,
+      }
+    });
+
+    if (result) {
+      return false;
+    }
+    
+    return true;
+  }
 }

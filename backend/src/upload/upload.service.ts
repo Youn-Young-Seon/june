@@ -1,7 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Job, Queue } from 'bullmq';
+import { Queue } from 'bullmq';
 import { PrismaService } from '../common/prisma.service';
+import * as fs from 'fs';
 
 @Injectable()
 export class UploadService {
@@ -26,6 +27,10 @@ export class UploadService {
     });
 
     if (result) {
+      fs.unlink(fileData.path, err => {
+        if (err) throw new Error(err.message);
+      });
+
       return false;
     }
     

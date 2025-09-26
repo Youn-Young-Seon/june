@@ -2,7 +2,7 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
-import { extname, join } from 'path';
+import { dirname, extname, join } from 'path';
 import * as fs from 'fs'
 import { Upload } from './entities/upload.entity';
 import { FileJobData } from './vo/file-job-data';
@@ -16,13 +16,15 @@ export class UploadConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileJobData, any, string>) {
-    const { originalname, path, lastModified } = job.data;
+    const { path, lastModified } = job.data;
 
-    const dstPath = await this.moveFile(path, `${join(process.env.UPLOAD_PATH, originalname)}`);
     const createdDate = new Date(Number(lastModified)) ?? new Date(Date.now());
-
-    job.data.dstPath = dstPath;
     job.data.createdDate = createdDate;
+
+    const uploadData = new Upload(job.data);
+
+    const dstPath = await this.moveFile(path, uploadData);
+    job.data.dstPath = dstPath;
 
     return { status: 'success' };
   }
@@ -48,7 +50,13 @@ export class UploadConsumer extends WorkerHost {
     });
   }
 
-  private moveFile(srcPath: string, destPath: string): Promise<string> {
+  private async moveFile(srcPath: string, uploadData: Upload): Promise<string> {
+    this.logger.log(`Moving file from ${srcPath} to ${uploadData.relativePath}`);
+    const destPath = uploadData.relativePath;
+
+    const destDir = dirname(destPath);
+    await fs.promises.mkdir(destDir, { recursive: true });
+
     return new Promise((resolve, reject) => {
       const readable = fs.createReadStream(srcPath);
       const writable = fs.createWriteStream(destPath);

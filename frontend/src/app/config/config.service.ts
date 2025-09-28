@@ -46,18 +46,16 @@ export class ConfigService {
   }
 
   get apiUrl(): string {
-    if (!this.appConfig) {
-      // 로컬 개발 중 HMR(Hot-Module-Replacement) 시 여기서 에러가 날 수 있습니다.
-      // fallback 값을 제공하여 안정성을 높일 수 있습니다.
-      return 'http://localhost:5000/api';
+    if (this.appConfig) {
+      return this.appConfig.apiUrl;
     }
-    return this.appConfig.apiUrl;
+    return 'http://localhost:5000/api';
   }
 
   get wsUrl(): string {
-    if (!this.appConfig) {
-      return 'ws://localhost:5000';
+    if (this.appConfig) {
+      return this.appConfig.wsUrl;
     }
-    return this.appConfig.wsUrl;
+    return 'ws://localhost:5000';
   }
 } 

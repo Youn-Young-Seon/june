@@ -52,6 +52,3 @@ jobs:
           script: |
             cd /jun/june
             git pull origin develop
-            kubectl apply -f ./infra/
-            kubectl apply -f ./backend/infra/k8s/
-            kubectl apply -f ./frontend/infra/k8s/

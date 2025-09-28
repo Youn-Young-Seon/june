@@ -26,7 +26,7 @@ export class ConfigService {
       // HTTP 요청 대신 process.env에서 직접 값을 읽습니다.
       // 이렇게 하면 레이스 컨디션 문제가 발생하지 않습니다.
       this.appConfig = {
-        apiUrl: process.env['API_URL'] || 'http://localhost:5000/api', // k8s 환경변수가 없으면 fallback
+        apiUrl: process.env['API_URL'] || process.env['LOCAL_API_URL'] || 'http://localhost:5000/api', // k8s 환경변수가 없으면 fallback
         wsUrl: process.env['WS_URL'] || 'ws://localhost:5000',
       };
 

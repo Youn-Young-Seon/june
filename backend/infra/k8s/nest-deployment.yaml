@@ -27,7 +27,7 @@ spec:
         image: youngseon360/june-backend:latest  # 실제 이미지로 변경        
         volumeMounts:
         - name: upload-storage
-          mountPath: /mnt/f/Very/upload  # 컨테이너 내 파일 저장 위치      
+          mountPath: mnt/f/Very/upload  # 컨테이너 내 파일 저장 위치      
         ports:
         - containerPort: 5000
         env:

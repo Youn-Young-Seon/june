@@ -9,6 +9,8 @@ data:
     }
 
     http {
+        client_max_body_size 1g;
+
         upstream frontend {
             server angular-service:4200;
         }

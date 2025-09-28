@@ -33,3 +33,18 @@ spec:
               secretKeyRef:
                 name: app-secrets
                 key: DATABASE_URL
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: REDIS_HOST
+          - name: TMP_PATH
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: TMP_PATH
+          - name: UPLOAD_PATH
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: UPLOAD_PATH

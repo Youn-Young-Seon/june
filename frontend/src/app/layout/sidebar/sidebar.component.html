@@ -1,4 +1,11 @@
-<aside [ngClass]="collapsed ? 'w-20' : 'w-56'" class="sidebar bg-white h-full border-r flex flex-col justify-between py-4 transition-all duration-300">
+    <aside [ngClass]="{
+        'w-56': !collapsed,
+        'w-20': collapsed,
+        'translate-x-0': isMobileOpen,
+        '-translate-x-full': !isMobileOpen
+      }"
+      class="fixed inset-y-0 left-0 bg-white h-full border-r flex flex-col justify-between py-4 transition-transform duration-300 z-30 md:relative md:translate-x-0">
+
   <div>
     <ul class="space-y-2">      
       <li *ngFor="let menuItem of commonMenuItems">

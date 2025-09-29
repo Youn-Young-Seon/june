@@ -1,35 +1,38 @@
 <div class="video-list">
-  <div *ngIf="loading" class="loading">불러오는 중...</div>
-  <div *ngIf="!loading && error" class="error">{{ error }}</div>
-  <div *ngIf="!loading && !error && videos.length === 0" class="empty">업로드된 영상이 없습니다.</div>
+  <div *ngIf="loading" class="text-center p-12">불러오는 중...</div>
+  <div *ngIf="!loading && error" class="text-center p-12 text-red-600">{{ error }}</div>
+  <div *ngIf="!loading && !error && videos.length === 0" class="text-center p-12 text-gray-500">업로드된 영상이 없습니다.</div>
 
-  <div class="video-grid">
-    <div *ngFor="let video of videos" class="video-card">
-      <div class="thumb-wrap"
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8">
+    <div *ngFor="let video of videos" class="group flex flex-col">
+      <div class="relative w-full aspect-video bg-gray-200 rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition-shadow"
            [routerLink]="['/video', video.idx]"
-           style="cursor:pointer;"
            (mouseenter)="onMouseEnter(video.idx)"
            (mouseleave)="onMouseLeave()">
         <ng-container *ngIf="hoveredVideoId === video.idx; else thumbImg">
           <video [src]="videoStreamUrl" autoplay muted loop playsinline
-            style="width:100%;height:100%;object-fit:cover;"></video>
+            class="absolute w-full h-full object-cover"></video>
         </ng-container>
         <ng-template #thumbImg>
           <img [src]="video.thumbnail || '/assets/default-thumbnail.svg'" [alt]="video.title"
-            (error)="onImageError($event)" />
+            (error)="onImageError($event)" class="absolute w-full h-full object-cover" />
         </ng-template>
-        <div class="duration" *ngIf="video.duration">{{ video.duration | number:'1.0-0' }}초</div>
+        <div class="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-1.5 py-0.5 rounded" *ngIf="video.duration">{{ video.duration | number:'1.0-0' }}초</div>
       </div>
-      <div class="video-info">
-        <div class="title"
-             [routerLink]="['/video', video.idx]"
-             style="cursor:pointer;">
-          {{ video.title }}
-        </div>
-        <div class="meta">
-          <span class="uploader">{{ video.uploader || '알 수 없음' }}</span>
-          <span class="views">조회수 {{ formatViews(video.views || 0) }}</span>
-          <span class="date">· {{ formatDate(video.uploadDate) }}</span>
+      <div class="flex mt-3">
+        <!-- In a real app, you might have a channel avatar here -->
+        <div class="ml-0">
+          <div class="font-bold text-base leading-snug cursor-pointer group-hover:text-blue-600 transition-colors truncate"
+               [routerLink]="['/video', video.idx]">
+            {{ video.title }}
+          </div>
+          <div class="text-sm text-gray-600 mt-1">
+            <p class="truncate">{{ video.uploader || '알 수 없음' }}</p>
+            <div class="flex items-center gap-2">
+              <span>조회수 {{ formatViews(video.views || 0) }}</span>
+              <span class="before:content-['•'] before:mr-2">{{ formatDate(video.uploadDate) }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

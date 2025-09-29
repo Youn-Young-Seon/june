@@ -6,11 +6,19 @@
     <img src="/logo.svg" alt="Logo" height="32" width="32" class="h-6">
     <span class="ml-2 text-xl font-bold">JunTube</span>
   </div>
-  <div class="flex-1 flex justify-center">
+  <!-- Search bar - visible on md and up -->
+  <div class="hidden md:flex flex-1 justify-center">
     <input type="text" placeholder="Search" class="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-500">
     <button class="px-4 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-full">
       <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
     </button>
+  </div>
+
+  <!-- Search icon - visible on mobile only -->
+  <div class="flex-1 flex justify-end md:hidden">
+      <button class="p-2 focus:outline-none">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
   </div>
   <div class="flex items-center space-x-3">
     <button *ngIf="!checkIsLoggedIn()" (click)="openLoginModal()" class="px-4 py-2 border rounded-full text-blue-600 border-blue-600 hover:bg-blue-50">Sign In</button>

@@ -1,7 +1,21 @@
+<!-- Navbar -->
 <app-navbar (toggleSidebar)="toggleSidebar()"></app-navbar>
-<div class="layout-container">
-    <app-sidebar [collapsed]="isSidebarCollapsed"></app-sidebar>
-    <main class="main-content">
-        <app-video></app-video>
-    </main>
+
+<div class="relative min-h-screen md:flex">
+  <!-- Sidebar -->
+  <app-sidebar [collapsed]="isSidebarCollapsed" [isMobileOpen]="isMobileSidebarOpen" (closeSidebar)="isMobileSidebarOpen = false"></app-sidebar>
+
+  <!-- Content -->
+  <main class="flex-1">
+    <!-- Content is pushed by the sidebar on md screens and up -->
+    <div class="md:ml-56"> <!-- Adjust ml-56 based on expanded sidebar width -->
+        <div class="p-4 sm:p-6 md:p-8">
+            <app-video></app-video>
+            <!-- <router-outlet></router-outlet> -->
+        </div>
+    </div>
+  </main>
 </div>
+
+<!-- Overlay for mobile when sidebar is open -->
+<div *ngIf="isMobileSidebarOpen" (click)="isMobileSidebarOpen = false" class="fixed inset-0 bg-black opacity-50 z-20 md:hidden"></div>

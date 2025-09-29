@@ -14,6 +14,8 @@ export class SidebarComponent {
   @Input() 
   collapsed = false;
 
+  @Input() isMobileOpen!: boolean;
+
   commonMenuItems: MenuItem[] = [
     {
       name: 'Home',

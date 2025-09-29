@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../../auth/login/login.component';
 import { UploadComponent } from '../../upload/upload.component';
 import { AuthService } from '../../auth/auth.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, LoginComponent, UploadComponent],
+  imports: [CommonModule, RouterModule, LoginComponent, UploadComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
@@ -16,6 +17,7 @@ export class NavbarComponent {
 
   showLoginModal = false;
   showUploadModal = false;
+  isUserMenuOpen = false;
 
   constructor(private authService: AuthService) {}
 

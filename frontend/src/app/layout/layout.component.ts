@@ -12,11 +12,12 @@ import { RouterModule } from '@angular/router';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
+  // Set to false to ensure sidebar is always expanded when shown on desktop.
   isSidebarCollapsed = false;
   isMobileSidebarOpen = false;
 
   toggleSidebar() {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    // This button should only toggle the mobile sidebar overlay.
     this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
   }
 }

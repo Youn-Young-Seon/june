@@ -10,6 +10,7 @@
 /frontend/node_modules
 /frontend/dist
 /frontend/.angular
+/frontend\src\app\config\config.service.ts
 /backend/node_modules
 /node_modules
 npm-debug.log

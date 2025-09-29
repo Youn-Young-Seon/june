@@ -35,7 +35,7 @@ export class ConfigService {
       // --- 브라우저 환경일 경우 ---
       // 기존과 동일하게 /app-config 엔드포인트를 호출합니다.
       console.log('Loading config on BROWSER by fetching /app-config');
-      return firstValueFrom(this.http.get('/app-config')) 
+      return firstValueFrom(this.http.get('/app-config'))
         .then(config => {
           this.appConfig = config;
         })

@@ -48,6 +48,8 @@ export class UploadController {
       lastModified: body.lastModified,
     }
 
+    this.logger.log(JSON.stringify(reqFileData));
+
     const validCheck = await this.uploadService.invalidateFile(reqFileData);
 
     if (!validCheck) {

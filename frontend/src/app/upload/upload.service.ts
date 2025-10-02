@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Observable, Subject, map } from 'rxjs';
 import { ConfigService } from '../config/config.service';
+import * as exifr from 'exifr';
 
 export interface UploadProgress {
   progress: number;
@@ -27,9 +28,30 @@ export class UploadService {
     const formData = new FormData();
     formData.append('title', videoData.title);
     formData.append('description', videoData.description);
-    videoData.files.forEach(file => {
+    videoData.files.forEach(async (file) => {
       formData.append('file', file);
-      formData.append('lastModified', file.lastModified.toString());
+
+      const isVideo = file.type.startsWith('video');
+      const exifData = await exifr.parse(file, { xmp: true });
+
+      let capturedDate = null;
+      if (isVideo && exifData && exifData.CreateDate) {
+        capturedDate = exifData.CreateDate;
+      } else if (exifData && exifData.DateTimeOriginal) {
+        capturedDate = exifData.DateTimeOriginal;
+      } else {
+        console.warn('메타데이터에 촬영 날짜 정보가 없습니다.');
+      }
+      
+      if (capturedDate) {
+        // Date 객체를 생성하여 원하는 형식으로 변환할 수 있습니다.
+        const date = new Date(capturedDate);
+        formData.append('lastModified', date.getTime().toString());
+      } else {
+        // EXIF/XMP 데이터가 없는 경우 lastModified를 대체값으로 사용
+        formData.append('lastModified', file.lastModified.toString());
+      }
+
     });
 
     return this.http.post(`${this.configService.apiUrl}/upload/multiple`, formData, {

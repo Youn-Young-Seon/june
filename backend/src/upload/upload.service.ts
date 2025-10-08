@@ -13,6 +13,28 @@ export class UploadService {
     private readonly prisma: PrismaService,
   ) { }
 
+  async getVideos() {
+    return await this.prisma.mediaFile.findMany({
+      where: {
+        extension: {
+          in: [
+            'mp4', 'mov', 'avi', 'mkv', 'wmv', 'flv', 'webm'
+          ]
+        }
+      }
+    });
+  }
+
+  async getPictures() {
+    return await this.prisma.mediaFile.findMany({
+      where: {
+        extension: {
+          in: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'svg', 'ico']
+        }
+      }
+    });
+  }
+
   async invalidateFile(fileData: any): Promise<boolean> {
     const fileDate = new Date(Number(fileData.lastModified)) ?? new Date(Date.now());
     const year = fileDate.getFullYear();

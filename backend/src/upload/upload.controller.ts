@@ -57,6 +57,16 @@ export class UploadController {
     return await this.fileQueue.add('upload', reqFileData);
   }
 
+  @Get('pictures')
+  async getPictures() {
+    return await this.uploadService.getPictures();
+  }
+
+  @Get('videos')
+  async getVideos() {
+    return await this.uploadService.getVideos();
+  }
+
   @Get('job/progress/:jobId')
   async getJobProgress(@Param('jobId') jobId: string) {
     const job = await this.fileQueue.getJob(jobId);
